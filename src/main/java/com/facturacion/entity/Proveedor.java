@@ -31,6 +31,8 @@ public class Proveedor {
     private String direccion;
     private String telefono;
 
+    private String estado;
+
     @OneToMany(mappedBy = "proveedor")
     private List<Producto> productos;
 

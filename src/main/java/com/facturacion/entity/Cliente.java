@@ -31,6 +31,8 @@ public class Cliente {
     private Boolean activo;
     private LocalDate fechaCreacion;
 
+    private String estado;
+
     @OneToMany(mappedBy = "cliente")
     private List<Factura> facturas;
 }
