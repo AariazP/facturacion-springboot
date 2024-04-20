@@ -1,6 +1,6 @@
 package com.facturacion.dto;
 
-import com.facturacion.entity.CabFactura;
+import com.facturacion.entity.Factura;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

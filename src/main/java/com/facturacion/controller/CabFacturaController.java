@@ -1,6 +1,6 @@
 package com.facturacion.controller;
 
-import com.facturacion.entity.CabFactura;
+import com.facturacion.entity.Factura;
 import com.facturacion.service.CabFacturaService;
 import com.facturacion.util.ResponseMessage;
 import org.springframework.http.HttpStatus;
@@ -20,21 +20,21 @@ public class CabFacturaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CabFactura>> obtenerTodasCabeceras() {
-        List<CabFactura> cabeceras = cabFacturaService.obtenerTodas();
+    public ResponseEntity<List<Factura>> obtenerTodasCabeceras() {
+        List<Factura> cabeceras = cabFacturaService.obtenerTodas();
         return new ResponseEntity<>(cabeceras, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CabFactura> obtenerFacturaPorId(@PathVariable("id") Integer id) {
+    public ResponseEntity<Factura> obtenerFacturaPorId(@PathVariable("id") Integer id) {
         return cabFacturaService.obtenerPorId(id)
                 .map(factura -> new ResponseEntity<>(factura, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping
-    public ResponseEntity<CabFactura> guardarFactura(@RequestBody CabFactura cabFactura) {
-        CabFactura facturaGuardada = cabFacturaService.guardarCabFactura(cabFactura);
+    public ResponseEntity<Factura> guardarFactura(@RequestBody Factura cabFactura) {
+        Factura facturaGuardada = cabFacturaService.guardarCabFactura(cabFactura);
         return new ResponseEntity<>(facturaGuardada, HttpStatus.CREATED);
     }
 

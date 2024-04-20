@@ -1,7 +1,7 @@
 package com.facturacion.service;
 
-import com.facturacion.entity.CabFactura;
-import com.facturacion.repository.CabFacturaRepository;
+import com.facturacion.entity.Factura;
+import com.facturacion.repository.FacturaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -12,24 +12,24 @@ import java.util.Optional;
 @Service
 public class CabFacturaService {
 
-    private final CabFacturaRepository cabFacturaRepository;
+    private final FacturaRepository cabFacturaRepository;
 
-    public CabFacturaService(CabFacturaRepository cabFacturaRepository) {
+    public CabFacturaService(FacturaRepository cabFacturaRepository) {
         this.cabFacturaRepository = cabFacturaRepository;
     }
 
-    public CabFactura guardarCabFactura(CabFactura cabFactura) {
+    public Factura guardarCabFactura(Factura cabFactura) {
         return this.cabFacturaRepository.save(cabFactura);
     }
 
-    public List<CabFactura> obtenerTodas( ) {
-        Iterable<CabFactura> cabFacturas = this.cabFacturaRepository.findAll();
-        List<CabFactura> listaCabFacturas = new ArrayList<>();
+    public List<Factura> obtenerTodas( ) {
+        Iterable<Factura> cabFacturas = this.cabFacturaRepository.findAll();
+        List<Factura> listaCabFacturas = new ArrayList<>();
         cabFacturas.forEach(listaCabFacturas::add);
         return listaCabFacturas;
     }
 
-    public Optional<CabFactura> obtenerPorId(Integer id) {
+    public Optional<Factura> obtenerPorId(Integer id) {
         return this.cabFacturaRepository.findById(id);
     }
 

@@ -1,9 +1,9 @@
 package com.facturacion.service;
 
 import com.facturacion.dto.DetFacturaDTO;
-import com.facturacion.entity.CabFactura;
+import com.facturacion.entity.Factura;
 import com.facturacion.entity.DetFactura;
-import com.facturacion.repository.CabFacturaRepository;
+import com.facturacion.repository.FacturaRepository;
 import com.facturacion.repository.DetFacturaRepository;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
@@ -18,9 +18,9 @@ public class DetFacturaService {
     private static  final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(DetFacturaService.class);
     private final DetFacturaRepository detFacturaRepository;
 
-    private final CabFacturaRepository cabFacturaRepository;
+    private final FacturaRepository cabFacturaRepository;
 
-    public DetFacturaService(DetFacturaRepository detFacturaRepository, CabFacturaRepository cabFacturaRepository) {
+    public DetFacturaService(DetFacturaRepository detFacturaRepository, FacturaRepository cabFacturaRepository) {
         this.detFacturaRepository = detFacturaRepository;
         this.cabFacturaRepository = cabFacturaRepository;
     }
