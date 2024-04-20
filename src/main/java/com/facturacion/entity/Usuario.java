@@ -1,23 +1,26 @@
 package com.facturacion.entity;
 
 import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
+import lombok.experimental.SuperBuilder;
 
 @Entity
+@NoArgsConstructor
 @Getter
 @Setter
-@NoArgsConstructor
+@SuperBuilder
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Usuario {
 
     @Id
-    private String username;
+    @EqualsAndHashCode.Include
+    private String email;
     private String password;
-    private Integer intentosFallidos;
-    @Column(columnDefinition = "TINYINT")
-    private Byte bloqueado;
+
+    @ManyToOne
+    private Rol rol;
 
 }

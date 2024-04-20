@@ -3,11 +3,12 @@ package com.facturacion.entity;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -15,29 +16,32 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "cab_factura")
-public class CabFactura {
+@SuperBuilder
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+public class Factura {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_factura")
-    private Integer idFcatura;
-    @Column(name = "num_factura")
+    @EqualsAndHashCode.Include
+    private Integer idFactura;
     private Integer numeroFactura;
-    @Column(name = "ruc_cliente")
-    private String rucCliente;
 
-    @Column(name = "subtotal", columnDefinition = "DECIMAL(10,2)")
+    @Column(columnDefinition = "DECIMAL(10,2)")
     private String subtotal;
-    @Column(name = "igv", columnDefinition = "DECIMAL(10,2)")
-    private String igv;
-    @Column(name = "total", columnDefinition = "DECIMAL(10,2)")
+    @Column(columnDefinition = "DECIMAL(10,2)")
+    private String iva;
+    @Column(columnDefinition = "DECIMAL(10,2)")
     private String total;
 
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "pkCabFactura", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "factura", cascade = CascadeType.ALL)
     private List<DetFactura> detFactura;
 
+    @ManyToOne
+    private Usuario usuarioCreador;
+
+    @ManyToOne
+    private Cliente cliente;
 
 }

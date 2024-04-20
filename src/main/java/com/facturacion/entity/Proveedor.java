@@ -1,36 +1,37 @@
 package com.facturacion.entity;
 
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
+import java.util.List;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDate;
-import java.util.List;
-
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Cliente {
+public class Proveedor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
-    private Integer idCliente;
-    private String identificacion;
+    private Integer idProveedor;
+
+    private String NIT;
     private String nombre;
     private String direccion;
-    private String correo;
-    private Boolean activo;
-    private LocalDate fechaCreacion;
+    private String telefono;
 
-    @OneToMany(mappedBy = "cliente")
-    private List<Factura> facturas;
+    @OneToMany(mappedBy = "proveedor")
+    private List<Producto> productos;
+
 }
