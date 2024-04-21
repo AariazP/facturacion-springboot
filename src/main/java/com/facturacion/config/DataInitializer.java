@@ -9,8 +9,6 @@ import com.facturacion.repository.UsuarioRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 
-import java.util.List;
-
 import org.springframework.stereotype.Component;
 
 @Component
@@ -23,58 +21,78 @@ public class DataInitializer {
 
     @PostConstruct
     public void init() {
-        moduloRepository.saveAll(
-            List.of(
-                // en estos dos modulos están todas las actividades dentro del alcance del proceso "gestionar proveedores y clientes"
-                Modulo.builder()
-                .nombreModulo("crud-cliente")
-                .build(),
-                Modulo.builder()
-                .nombreModulo("crud-proveedor")
-                .build()
+        // si encuenta algún modulo con ese nombre no lo crea
+        moduloRepository.findByNombreModulo("crud-cliente").ifPresentOrElse(
+            modulo -> {},
+            () -> {
+                moduloRepository.save(
+                    Modulo.builder()
+                        .nombreModulo("crud-cliente")
+                        .build()
+                );
+            }
+        );
+        moduloRepository.findByNombreModulo("crud-proveedor").ifPresentOrElse(
+            modulo -> {},
+            () -> {
+                moduloRepository.save(
+                    Modulo.builder()
+                        .nombreModulo("crud-proveedor")
+                        .build()
+                );
+            }
+        );
+        // si encuenta algún rol con ese nombre no lo crea
+        rolRepository.findByNombre("administrador").ifPresentOrElse(
+            rol -> {},
+            () -> {
+                Rol rol = new Rol("administrador");
+                rolRepository.save(rol);
+            }
+        );
+        rolRepository.findByNombre("cajero").ifPresentOrElse(
+            rol -> {},
+            () -> {
+                
+                Rol rol = new Rol("cajero");
 
-                // cada uno debe agregar los modulos de su proceso de forma que el rol administrador o cajero pueda acceder al modulo
-            )
+                Modulo modulo1 = moduloRepository.findByNombreModulo("crud-cliente").get();
+                Modulo modulo2 = moduloRepository.findByNombreModulo("crud-proveedor").get();
+
+                rol.addModule(modulo1);
+                rol.addModule(modulo2);
+
+                modulo1.getRoles().add(rol);
+                modulo2.getRoles().add(rol);
+
+                rolRepository.save(rol);
+
+            }
         );
-        rolRepository.saveAll(
-            List.of(
-                Rol.builder()
-                .nombre("administrador")
-                .modulos(
-                    List.of(
-                        // aqui van todos los modulos a los que tiene acceso el rol administrador
-                    )
-                )
-                .build(),
-                Rol.builder()
-                .nombre("cajero")
-                .modulos(
-                    List.of(
-                        // aqui van todos los modulos a los que tiene acceso el rol cajero
-                        moduloRepository.findByNombreModulo("crud-cliente").get(),
-                        moduloRepository.findByNombreModulo("crud-proveedor").get()
-                    )
-                )
-                .build()
-            )
+        // si encuenta algún usuario con ese email no lo crea
+        usuarioRepository.findByEmail("admin@gmail.com").ifPresentOrElse(
+            usuario -> {},
+            () -> {
+                usuarioRepository.save(
+                    Usuario.builder()
+                        .email("admin@gmail.com")
+                        .password("admin")
+                        .rol(rolRepository.findByNombre("administrador").get())
+                        .build()
+                );
+            }
         );
-        usuarioRepository.saveAll(
-            List.of(
-                Usuario.builder()
-                .email("admin@gmail.com")
-                .password("admin")
-                .rol(
-                    rolRepository.findByNombre("administrador").get()
-                )
-                .build(),
-                Usuario.builder()
-                .email("cajero@gmail.com")
-                .password("cajero")
-                .rol(
-                    rolRepository.findByNombre("cajero").get()
-                )
-                .build()
-            )
+        usuarioRepository.findByEmail("cajero@gmail.com").ifPresentOrElse(
+            usuario -> {},
+            () -> {
+                usuarioRepository.save(
+                    Usuario.builder()
+                        .email("cajero@gmail.com")
+                        .password("cajero")
+                        .rol(rolRepository.findByNombre("cajero").get())
+                        .build()
+                );
+            }
         );
     }
 

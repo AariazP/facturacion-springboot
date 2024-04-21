@@ -1,8 +1,14 @@
 package com.facturacion.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -12,13 +18,11 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 
 @Entity
 @NoArgsConstructor
 @Getter
 @Setter
-@SuperBuilder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Rol {
 
@@ -26,12 +30,35 @@ public class Rol {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Integer idRol;
+
+    @Column(unique = true)
     private String nombre;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "roles"
+        //fetch = FetchType.LAZY
+      /* cascade = {
+          CascadeType.PERSIST,
+          CascadeType.MERGE
+      }, */
+    )
     private List<Modulo> modulos;
 
     @OneToMany(mappedBy = "rol")
     private List<Usuario> usuarios;
+
+    public Rol(String nombre, List<Modulo> modulos) {
+        this.nombre = nombre;
+        this.modulos = modulos;
+    }
+
+    public Rol(String nombre) {
+        this.nombre = nombre;
+        this.modulos = new ArrayList<>();
+    }
+
+    public void addModule(Modulo modulo) {
+        this.modulos.add(modulo);
+        // modulo.getRoles().add(this);
+    }
 
 }

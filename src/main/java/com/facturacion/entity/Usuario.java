@@ -20,7 +20,7 @@ public class Usuario {
     private String email;
     private String password;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Rol rol;
 
 }
