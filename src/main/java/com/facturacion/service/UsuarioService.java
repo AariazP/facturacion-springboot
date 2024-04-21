@@ -1,8 +1,11 @@
 package com.facturacion.service;
 
+import com.facturacion.dto.ClienteDTO;
 import com.facturacion.dto.ProveedorDTO;
+import com.facturacion.entity.Cliente;
 import com.facturacion.entity.Proveedor;
 import com.facturacion.entity.Usuario;
+import com.facturacion.repository.ClienteRepository;
 import com.facturacion.repository.ProveedorRepository;
 import com.facturacion.repository.UsuarioRepository;
 
@@ -19,6 +22,7 @@ public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
     private final ProveedorRepository proveedorRepository;
+    private final ClienteRepository clienteRepository;
 
     public Optional<Usuario> buscarPorEmailYContrasenia(String email, String password) {
         return this.usuarioRepository.findByEmailAndPassword(email, password);
@@ -64,5 +68,36 @@ public class UsuarioService {
         } else {
             return "0000";
         }
+    }
+
+    public List<Cliente> clientesActivos() {
+        return this.clienteRepository.findByEstado("activo");
+    }
+
+    public Cliente crearCliente(Cliente cliente) {
+        return this.clienteRepository.save(cliente);
+    }
+
+    public Optional<Cliente> clienteActivoPorIdentificacion(String identificacion) {
+        return this.clienteRepository.findByEstadoAndIdentificacion("activo", identificacion);
+    }
+
+    public List<Cliente> clientesActivosPorNombre(String nombre) {
+        return this.clienteRepository.findByEstadoAndNombreContaining("activo", nombre);
+    }
+
+    public String actualizarClienteActivo(String identificacion, ClienteDTO clienteDTO) {
+
+        Optional<Cliente> cliente = this.clienteRepository.findByEstadoAndIdentificacion("activo", identificacion);
+        if (cliente.isPresent()) {
+            cliente.get().setCorreo(clienteDTO.correo());
+            cliente.get().setNombre(clienteDTO.nombre());
+            cliente.get().setDireccion(clienteDTO.direccion());
+            this.clienteRepository.save(cliente.get());
+            return identificacion;
+        } else {
+            return "0000";
+        }
+
     }
 }

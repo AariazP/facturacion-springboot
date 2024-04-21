@@ -28,7 +28,6 @@ public class Cliente {
     private String nombre;
     private String direccion;
     private String correo;
-    private Boolean activo;
     private LocalDate fechaCreacion;
 
     private String estado;

@@ -17,8 +17,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.facturacion.dto.ClienteDTO;
 import com.facturacion.dto.ProveedorDTO;
 import com.facturacion.dto.UsuarioDTO;
+import com.facturacion.entity.Cliente;
 import com.facturacion.entity.Proveedor;
 import com.facturacion.entity.Usuario;
 import com.facturacion.service.UsuarioService;
@@ -34,8 +36,6 @@ public class UsuarioController {
     private final Logger LOGGER = LoggerFactory.getLogger(UsuarioService.class);
 
     private final UsuarioService usuarioService;
-
-    // ---------------------------------------------------- PRIMER MODULO - CRUD PROVEEDORES -------------------------------------------------------------------
 
     @GetMapping("/login")
     public ResponseEntity<ResponseMessageDTO<UsuarioDTO>> login(@RequestParam String email, @RequestParam String password) {
@@ -55,6 +55,8 @@ public class UsuarioController {
             return ResponseEntity.badRequest().body(new ResponseMessageDTO<>(HttpStatus.BAD_REQUEST.value(), "Falta el usuario o la contraseña", null));
         }
     }
+
+    // ---------------------------------------------------- PRIMER MODULO - CRUD PROVEEDORES -------------------------------------------------------------------
 
     @GetMapping("/proveedores")
     public ResponseEntity<ResponseMessageDTO<List<ProveedorDTO>>> proveedores(@RequestParam String email) {
@@ -79,7 +81,7 @@ public class UsuarioController {
         }
     }
 
-    @PostMapping("/proveedores")
+    @PostMapping("/proveedor")
     public ResponseEntity<ResponseMessageDTO<ProveedorDTO>> crearProveedor(@RequestBody ProveedorDTO proveedorDTO, @RequestParam String email) {
 
         if (email != null) {
@@ -180,6 +182,141 @@ public class UsuarioController {
                     return ResponseEntity.ok(new ResponseMessageDTO<>(HttpStatus.OK.value(), "Proveedor eliminado exitosamente", NIT));
                 } else {
                     return ResponseEntity.ok(new ResponseMessageDTO<>(HttpStatus.NOT_FOUND.value(), "Proveedor no encontrado", null));
+                }
+            } else {
+                return ResponseEntity.ok(new ResponseMessageDTO<>(HttpStatus.FORBIDDEN.value(), "No tiene acceso a este recurso", null));
+            }
+
+        } else {
+            LOGGER.info("Falta el email");
+            return ResponseEntity.badRequest().body(new ResponseMessageDTO<>(HttpStatus.BAD_REQUEST.value(), "Falta el email", null));
+        }
+    }
+
+    // ---------------------------------------------------- SEGUNDO MODULO - CRUD CLIENTES -------------------------------------------------------------------
+
+    @GetMapping("/clientes")
+    public ResponseEntity<ResponseMessageDTO<List<ClienteDTO>>> clientes(@RequestParam String email) {
+
+        if (email != null) {
+            
+            if (this.usuarioService.tieneAcceso(email, "crud-cliente")) {
+                List<Cliente> clientes = this.usuarioService.clientesActivos();
+                if (clientes.isEmpty()) {
+                    return ResponseEntity.ok(new ResponseMessageDTO<>(HttpStatus.NOT_FOUND.value(), "No hay clientes", null));
+                } else {
+                    return ResponseEntity.ok(new ResponseMessageDTO<>(HttpStatus.OK.value(), "Lista de clientes", clientes.stream().map(ClienteDTO::new).toList()));
+                }
+            } else {
+                return ResponseEntity.ok(new ResponseMessageDTO<>(HttpStatus.FORBIDDEN.value(), "No tiene acceso a este recurso", null));
+            }
+
+        } else {    
+            LOGGER.info("Falta el email");
+            return ResponseEntity.badRequest().body(new ResponseMessageDTO<>(HttpStatus.BAD_REQUEST.value(), "Falta el email", null));
+        }
+    }
+
+    @PostMapping("/cliente")
+    public ResponseEntity<ResponseMessageDTO<ClienteDTO>> crearCliente(@RequestBody ClienteDTO clienteDTO, @RequestParam String email) {
+
+        if (email != null) {
+            
+            if (this.usuarioService.tieneAcceso(email, "crud-cliente")) {
+                Cliente cliente = clienteDTO.toEntity();
+                Cliente clienteCreado = this.usuarioService.crearCliente(cliente);
+                return ResponseEntity.ok(new ResponseMessageDTO<>(HttpStatus.CREATED.value(), "Cliente creado exitosamente", new ClienteDTO(clienteCreado)));
+            } else {
+                return ResponseEntity.ok(new ResponseMessageDTO<>(HttpStatus.FORBIDDEN.value(), "No tiene acceso a este recurso", null));
+            }
+
+        } else {
+            LOGGER.info("Falta el email");
+            return ResponseEntity.badRequest().body(new ResponseMessageDTO<>(HttpStatus.BAD_REQUEST.value(), "Falta el email", null));
+        }
+
+    }
+
+    @GetMapping("/cliente/{identificacion}")
+    public ResponseEntity<ResponseMessageDTO<ClienteDTO>> cliente(@RequestParam String email, @PathVariable String identificacion) {
+
+        if (email != null) {
+            
+            if (this.usuarioService.tieneAcceso(email, "crud-cliente")) {
+                Optional<Cliente> cliente = this.usuarioService.clienteActivoPorIdentificacion(identificacion);
+                if (cliente.isPresent()) {
+                    return ResponseEntity.ok(new ResponseMessageDTO<>(HttpStatus.OK.value(), "Cliente encontrado", new ClienteDTO(cliente.get())));
+                } else {
+                    return ResponseEntity.ok(new ResponseMessageDTO<>(HttpStatus.NOT_FOUND.value(), "Cliente no encontrado", null));
+                }
+            } else {
+                return ResponseEntity.ok(new ResponseMessageDTO<>(HttpStatus.FORBIDDEN.value(), "No tiene acceso a este recurso", null));
+            }
+
+        } else {
+            LOGGER.info("Falta el email");
+            return ResponseEntity.badRequest().body(new ResponseMessageDTO<>(HttpStatus.BAD_REQUEST.value(), "Falta el email", null));
+        }
+    }
+
+    @GetMapping("/clientes/{nombre}")
+    public ResponseEntity<ResponseMessageDTO<List<ClienteDTO>>> clientesPorNombre(@RequestParam String email, @PathVariable String nombre) {
+
+        if (email != null) {
+            
+            if (this.usuarioService.tieneAcceso(email, "crud-cliente")) {
+                List<Cliente> clientes = this.usuarioService.clientesActivosPorNombre(nombre);
+                if (clientes.isEmpty()) {
+                    return ResponseEntity.ok(new ResponseMessageDTO<>(HttpStatus.NOT_FOUND.value(), "No hay clientes", null));
+                } else {
+                    return ResponseEntity.ok(new ResponseMessageDTO<>(HttpStatus.OK.value(), "Lista de clientes", clientes.stream().map(ClienteDTO::new).toList()));
+                }
+            } else {
+                return ResponseEntity.ok(new ResponseMessageDTO<>(HttpStatus.FORBIDDEN.value(), "No tiene acceso a este recurso", null));
+            }
+
+        } else {
+            LOGGER.info("Falta el email");
+            return ResponseEntity.badRequest().body(new ResponseMessageDTO<>(HttpStatus.BAD_REQUEST.value(), "Falta el email", null));
+        }
+    }
+
+    @PutMapping("/cliente/{identificacion}")
+    public ResponseEntity<ResponseMessageDTO<String>> actualizarCliente(@RequestBody ClienteDTO clienteDTO, @RequestParam String email, @PathVariable String identificacion) {
+
+        if (email != null) {
+            
+            if (this.usuarioService.tieneAcceso(email, "crud-cliente")) {
+                Optional<Cliente> cliente = this.usuarioService.clienteActivoPorIdentificacion(identificacion);
+                if (cliente.isPresent()) {
+                    String identificacionClienteActualizado = this.usuarioService.actualizarClienteActivo(identificacion, clienteDTO);
+                    return ResponseEntity.ok(new ResponseMessageDTO<>(HttpStatus.OK.value(), "Cliente actualizado exitosamente", identificacionClienteActualizado));
+                } else {
+                    return ResponseEntity.ok(new ResponseMessageDTO<>(HttpStatus.NOT_FOUND.value(), "Cliente no encontrado", null));
+                }
+            } else {
+                return ResponseEntity.ok(new ResponseMessageDTO<>(HttpStatus.FORBIDDEN.value(), "No tiene acceso a este recurso", null));
+            }
+
+        } else {
+            LOGGER.info("Falta el email");
+            return ResponseEntity.badRequest().body(new ResponseMessageDTO<>(HttpStatus.BAD_REQUEST.value(), "Falta el email", null));
+        }
+    }
+
+    @DeleteMapping("/cliente/{identificacion}")
+    public ResponseEntity<ResponseMessageDTO<String>> eliminarCliente(@RequestParam String email, @PathVariable String identificacion) {
+
+        if (email != null) {
+            
+            if (this.usuarioService.tieneAcceso(email, "crud-cliente")) {
+                Optional<Cliente> cliente = this.usuarioService.clienteActivoPorIdentificacion(identificacion);
+                if (cliente.isPresent()) {
+                    cliente.get().setEstado("inactivo");
+                    this.usuarioService.crearCliente(cliente.get());
+                    return ResponseEntity.ok(new ResponseMessageDTO<>(HttpStatus.OK.value(), "Cliente eliminado exitosamente", identificacion));
+                } else {
+                    return ResponseEntity.ok(new ResponseMessageDTO<>(HttpStatus.NOT_FOUND.value(), "Cliente no encontrado", null));
                 }
             } else {
                 return ResponseEntity.ok(new ResponseMessageDTO<>(HttpStatus.FORBIDDEN.value(), "No tiene acceso a este recurso", null));
