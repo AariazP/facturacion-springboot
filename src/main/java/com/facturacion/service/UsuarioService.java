@@ -31,4 +31,14 @@ public class UsuarioService {
         return this.proveedorRepository.save(proveedor);
     }
 
+    public boolean tieneAcceso(String email, String modulo) {
+        
+        Optional<Usuario> usuario = this.usuarioRepository.findByEmail(email);
+        if (usuario.isPresent()) {
+            return usuario.get().getRol().getModulos().stream().anyMatch(moduloRol -> moduloRol.getNombreModulo().equals(modulo));
+        }
+        return false;
+
+    }
+
 }
