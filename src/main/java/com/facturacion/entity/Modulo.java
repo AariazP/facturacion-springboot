@@ -34,10 +34,10 @@ public class Modulo {
     private String nombreModulo;
 
     @ManyToMany(// fetch = FetchType.LAZY
-      /* cascade = {
-          CascadeType.PERSIST,
+      cascade = {
+          // CascadeType.PERSIST,
           CascadeType.MERGE
-      } */
+      }
     )
     @JoinTable(name = "modulo_rol",
             joinColumns = @JoinColumn(name = "id_modulo"),

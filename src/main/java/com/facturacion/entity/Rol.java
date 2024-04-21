@@ -34,12 +34,12 @@ public class Rol {
     @Column(unique = true)
     private String nombre;
 
-    @ManyToMany(mappedBy = "roles"
+    @ManyToMany(mappedBy = "roles",
         //fetch = FetchType.LAZY
-      /* cascade = {
-          CascadeType.PERSIST,
+      cascade = {
+          // CascadeType.PERSIST,
           CascadeType.MERGE
-      }, */
+      }
     )
     private List<Modulo> modulos;
 
