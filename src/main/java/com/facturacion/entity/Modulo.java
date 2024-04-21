@@ -33,15 +33,7 @@ public class Modulo {
     private Integer idCliente;
     private String nombreModulo;
 
-    @ManyToMany(// fetch = FetchType.LAZY
-      cascade = {
-          // CascadeType.PERSIST,
-          CascadeType.MERGE
-      }
-    )
-    @JoinTable(name = "modulo_rol",
-            joinColumns = @JoinColumn(name = "id_modulo"),
-            inverseJoinColumns = @JoinColumn(name = "id_rol"))
+    @ManyToMany(mappedBy = "modulos")
     private List<Rol> roles;
 
 }

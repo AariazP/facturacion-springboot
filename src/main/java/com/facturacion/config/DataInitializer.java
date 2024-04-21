@@ -50,25 +50,17 @@ public class DataInitializer {
                 rolRepository.save(rol);
             }
         );
-
-        Rol rol2 = null;
-
         rolRepository.findByNombre("cajero").ifPresentOrElse(
             rol -> {},
             () -> {
                 
                 Rol rol = new Rol("cajero");
 
-                // rol2 = rol;
-
                 Modulo modulo1 = moduloRepository.findByNombreModulo("crud-cliente").get();
                 Modulo modulo2 = moduloRepository.findByNombreModulo("crud-proveedor").get();
 
-                rol.addModule(modulo1);
-                rol.addModule(modulo2);
-
-                // modulo1.getRoles().add(rol);
-                // modulo2.getRoles().add(rol);
+                rol.getModulos().add(modulo1);
+                rol.getModulos().add(modulo2);
 
                 rolRepository.save(rol);
                 

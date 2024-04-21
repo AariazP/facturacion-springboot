@@ -12,6 +12,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import lombok.EqualsAndHashCode;
@@ -34,13 +36,10 @@ public class Rol {
     @Column(unique = true)
     private String nombre;
 
-    @ManyToMany(mappedBy = "roles",
-        //fetch = FetchType.LAZY
-      cascade = {
-          // CascadeType.PERSIST,
-          CascadeType.MERGE
-      }
-    )
+    @ManyToMany
+    @JoinTable(name = "modulo_rol",
+            joinColumns = @JoinColumn(name = "id_rol"),
+            inverseJoinColumns = @JoinColumn(name = "id_modulo"))
     private List<Modulo> modulos;
 
     @OneToMany(mappedBy = "rol")
