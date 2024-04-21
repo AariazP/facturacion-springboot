@@ -1,20 +1,34 @@
 package com.facturacion.service;
 
+import com.facturacion.entity.Proveedor;
 import com.facturacion.entity.Usuario;
+import com.facturacion.repository.ProveedorRepository;
 import com.facturacion.repository.UsuarioRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UsuarioService {
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final ProveedorRepository proveedorRepository;
 
     public Optional<Usuario> buscarPorEmailYContrasenia(String email, String password) {
         return this.usuarioRepository.findByEmailAndPassword(email, password);
+    }
+
+    public List<Proveedor> proveedoresActivos() {
+        return this.proveedorRepository.findByEstado("activo");
+    }
+
+    public Proveedor crearProveedor(Proveedor proveedor) {
+        return this.proveedorRepository.save(proveedor);
     }
 
 }
