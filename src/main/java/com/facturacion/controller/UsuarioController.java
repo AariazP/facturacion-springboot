@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.facturacion.dto.ClienteDTO;
+import com.facturacion.dto.LoginDTO;
 import com.facturacion.dto.ProveedorDTO;
 import com.facturacion.dto.UsuarioDTO;
 import com.facturacion.entity.Cliente;
@@ -37,12 +38,12 @@ public class UsuarioController {
 
     private final UsuarioService usuarioService;
 
-    @GetMapping("/login")
-    public ResponseEntity<ResponseMessageDTO<UsuarioDTO>> login(@RequestParam String email, @RequestParam String password) {
+    @PostMapping("/login")
+    public ResponseEntity<ResponseMessageDTO<UsuarioDTO>> login(@RequestBody LoginDTO loginDTO) {
         
-        if (email != null && password != null) {
+        if (loginDTO.email() != null && loginDTO.password() != null) {
 
-            Optional<Usuario> usuarioAutenticado = this.usuarioService.buscarPorEmailYContrasenia(email, password);
+            Optional<Usuario> usuarioAutenticado = this.usuarioService.buscarPorEmailYContrasenia(loginDTO.email(), loginDTO.password());
             if (usuarioAutenticado.isPresent()) {
                 return ResponseEntity.ok(new ResponseMessageDTO<UsuarioDTO>(HttpStatus.OK.value(), "Usuario autenticado exitosamente", new UsuarioDTO(usuarioAutenticado.get())));
             } else {
@@ -58,7 +59,7 @@ public class UsuarioController {
 
     // ---------------------------------------------------- PRIMER MODULO - CRUD PROVEEDORES -------------------------------------------------------------------
 
-    @GetMapping("/proveedores")
+    @GetMapping("/cajero/proveedores")
     public ResponseEntity<ResponseMessageDTO<List<ProveedorDTO>>> proveedores(@RequestParam String email) {
 
         if (email != null) {
@@ -81,7 +82,7 @@ public class UsuarioController {
         }
     }
 
-    @PostMapping("/proveedor")
+    @PostMapping("/cajero/proveedor")
     public ResponseEntity<ResponseMessageDTO<ProveedorDTO>> crearProveedor(@RequestBody ProveedorDTO proveedorDTO, @RequestParam String email) {
 
         if (email != null) {
@@ -102,7 +103,7 @@ public class UsuarioController {
 
     }
 
-    @GetMapping("/proveedor/{NIT}")
+    @GetMapping("/cajero/proveedor/{NIT}")
     public ResponseEntity<ResponseMessageDTO<ProveedorDTO>> proveedor(@RequestParam String email, @PathVariable String NIT) {
 
         if (email != null) {
@@ -124,7 +125,7 @@ public class UsuarioController {
         }
     }
 
-    @GetMapping("/proveedores/{nombre}")
+    @GetMapping("/cajero/proveedores/{nombre}")
     public ResponseEntity<ResponseMessageDTO<List<ProveedorDTO>>> proveedoresPorNombre(@RequestParam String email, @PathVariable String nombre) {
 
         if (email != null) {
@@ -146,7 +147,7 @@ public class UsuarioController {
         }
     }
 
-    @PutMapping("/proveedor/{NIT}")
+    @PutMapping("/cajero/proveedor/{NIT}")
     public ResponseEntity<ResponseMessageDTO<String>> actualizarProveedor(@RequestBody ProveedorDTO proveedorDTO, @RequestParam String email, @PathVariable String NIT) {
 
         if (email != null) {
@@ -169,7 +170,7 @@ public class UsuarioController {
         }
     }
 
-    @DeleteMapping("/proveedor/{NIT}")
+    @DeleteMapping("/cajero/proveedor/{NIT}")
     public ResponseEntity<ResponseMessageDTO<String>> eliminarProveedor(@RequestParam String email, @PathVariable String NIT) {
 
         if (email != null) {
@@ -195,7 +196,7 @@ public class UsuarioController {
 
     // ---------------------------------------------------- SEGUNDO MODULO - CRUD CLIENTES -------------------------------------------------------------------
 
-    @GetMapping("/clientes")
+    @GetMapping("/cajero/clientes")
     public ResponseEntity<ResponseMessageDTO<List<ClienteDTO>>> clientes(@RequestParam String email) {
 
         if (email != null) {
@@ -217,7 +218,7 @@ public class UsuarioController {
         }
     }
 
-    @PostMapping("/cliente")
+    @PostMapping("/cajero/cliente")
     public ResponseEntity<ResponseMessageDTO<ClienteDTO>> crearCliente(@RequestBody ClienteDTO clienteDTO, @RequestParam String email) {
 
         if (email != null) {
@@ -237,7 +238,7 @@ public class UsuarioController {
 
     }
 
-    @GetMapping("/cliente/{identificacion}")
+    @GetMapping("/cajero/cliente/{identificacion}")
     public ResponseEntity<ResponseMessageDTO<ClienteDTO>> cliente(@RequestParam String email, @PathVariable String identificacion) {
 
         if (email != null) {
@@ -259,7 +260,7 @@ public class UsuarioController {
         }
     }
 
-    @GetMapping("/clientes/{nombre}")
+    @GetMapping("/cajero/clientes/{nombre}")
     public ResponseEntity<ResponseMessageDTO<List<ClienteDTO>>> clientesPorNombre(@RequestParam String email, @PathVariable String nombre) {
 
         if (email != null) {
@@ -281,7 +282,7 @@ public class UsuarioController {
         }
     }
 
-    @PutMapping("/cliente/{identificacion}")
+    @PutMapping("/cajero/cliente/{identificacion}")
     public ResponseEntity<ResponseMessageDTO<String>> actualizarCliente(@RequestBody ClienteDTO clienteDTO, @RequestParam String email, @PathVariable String identificacion) {
 
         if (email != null) {
@@ -304,7 +305,7 @@ public class UsuarioController {
         }
     }
 
-    @DeleteMapping("/cliente/{identificacion}")
+    @DeleteMapping("/cajero/cliente/{identificacion}")
     public ResponseEntity<ResponseMessageDTO<String>> eliminarCliente(@RequestParam String email, @PathVariable String identificacion) {
 
         if (email != null) {

@@ -27,7 +27,7 @@ public class FiltroToken implements Filter {
         String token = getToken(req);
         boolean error = true;
         try {
-            if (requestURI.startsWith("/api/v1") && !requestURI.startsWith("/api/v1/login")){
+            if (requestURI.startsWith("/api/v1") && !requestURI.startsWith("/api/v1/login") && !requestURI.startsWith("/api/v1/swagger-ui")){
                 if (token != null) {
                     Jws<Claims> jws = jwtUtils.parseJwt(token);
                     if (
