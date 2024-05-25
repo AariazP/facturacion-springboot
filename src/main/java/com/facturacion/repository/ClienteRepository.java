@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ClienteRepository extends CrudRepository<Cliente, Integer> {
 
-    @Query(value = "SELECT count(ruc_dni) as ruc_dni FROM facturacion.cliente where ruc_dni = :ruc_dni", nativeQuery = true)
+    @Query(value = "SELECT count(ruc_dni) as ruc_dni FROM cliente where ruc_dni = :ruc_dni", nativeQuery = true)
     public String verificarSiExiteCliente(@Param("ruc_dni") String ruc_dni);
 
 }

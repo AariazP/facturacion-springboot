@@ -6,9 +6,9 @@ server:
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://isabelle.db.elephantsql.com:5432/ylwvcdpb
-    username: ylwvcdpb
-    password: d1f7WLF0bolapN7vtdiZ9i9yJRXmFHP5
+    url: jdbc:postgresql://localhost:5432/facturacion
+    username: root
+    password: root
 
 
   jpa:
