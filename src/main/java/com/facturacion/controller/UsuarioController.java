@@ -14,6 +14,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/facturacion")
+@CrossOrigin(origins = "*")
 public class UsuarioController {
 
     private final Logger LOGGER = LoggerFactory.getLogger(UsuarioService.class);

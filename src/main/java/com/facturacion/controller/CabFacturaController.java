@@ -11,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/cab-factura")
+@CrossOrigin(origins = "*")
 public class CabFacturaController {
 
     private final CabFacturaService cabFacturaService;

@@ -12,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/det-factura")
+@CrossOrigin(origins = "*")
 public class DetFacturaController {
 
     private final DetFacturaService detFacturaService;

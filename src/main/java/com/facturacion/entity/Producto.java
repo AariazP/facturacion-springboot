@@ -4,9 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -23,7 +21,6 @@ public class Producto {
     private String nombre;
     private Double precio;
     private Double stock;
-    @Column(columnDefinition = "TINYINT")
     private Byte activo;
     private LocalDate fechaCreacion;
 
