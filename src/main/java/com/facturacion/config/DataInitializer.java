@@ -20,7 +20,7 @@ public class DataInitializer {
         usuario.setUsername("admin");
         usuario.setPassword("admin");
         usuario.setIntentosFallidos(0);
-        usuario.setBloqueado((byte) 0); // No bloqueado
+        usuario.setBloqueado((byte) 0);
 
         usuarioRepository.save(usuario);
     }
